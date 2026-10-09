@@ -1,0 +1,14 @@
+{
+  "name":"SEGA FC Cash Flow",
+  "short_name":"SEGA FC Kas",
+  "description":"Aplikasi laporan kas tim sepak bola SEGA FC",
+  "start_url":"./index.html",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#eef1f6",
+  "theme_color":"#071b3d",
+  "icons":[
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png"}
+  ]
+}

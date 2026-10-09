@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071b3d"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>SEGA FC — Kas Tim</title>
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--navy:#071b3d;--navy2:#102c58;--gold:#e6bd59;--cream:#f7f4eb;--ink:#13213a;--green:#147d53;--red:#b33b43}
+*{box-sizing:border-box}body{margin:0;background:#eef1f6;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(135deg,var(--navy),#123a70);color:white;padding:22px 16px 26px;border-radius:0 0 26px 26px}
+.brand{display:flex;align-items:center;gap:13px;max-width:900px;margin:auto}.brand img{width:68px;height:68px;object-fit:cover;border-radius:15px;border:2px solid var(--gold);background:white}
+.brand h1{font-size:23px;margin:0;letter-spacing:.5px}.brand p{margin:4px 0 0;color:#e8d7a5;font-size:12px;letter-spacing:1.7px}
+main{max-width:900px;margin:0 auto;padding:16px 13px 40px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:-8px}
+.stat{background:white;border-radius:16px;padding:14px 12px;box-shadow:0 5px 18px #13213a0d;border:1px solid #e7eaf0}.stat span{display:block;color:#6b7484;font-size:11px;font-weight:700;text-transform:uppercase}.stat strong{display:block;margin-top:6px;font-size:clamp(13px,3.2vw,20px);overflow-wrap:anywhere}.stat.total{background:var(--navy);color:white;border-color:var(--navy)}.stat.total span{color:#d8c58e}
+.panel{background:white;border:1px solid #e5e9f0;border-radius:18px;padding:17px;margin-top:15px;box-shadow:0 5px 18px #13213a08}.panel h2{font-size:17px;margin:0 0 14px;color:var(--navy)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}label{font-size:12px;font-weight:750;color:#566176}input,select,textarea{font:inherit;font-size:14px;padding:11px 12px;border:1px solid #d6dce6;border-radius:10px;background:#fff;color:var(--ink);width:100%;min-width:0}textarea{resize:vertical;min-height:65px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.btn{border:0;border-radius:11px;padding:11px 14px;font-weight:750;font-size:13px;cursor:pointer}.primary{background:var(--navy);color:white}.gold{background:var(--gold);color:#241b06}.soft{background:#edf1f7;color:var(--navy)}.danger{background:#fff0f0;color:var(--red)}.muted{color:#758095;font-size:12px;line-height:1.5}
+.entries{display:grid;gap:10px}.entry{border:1px solid #e3e8ef;border-radius:13px;padding:13px;display:grid;grid-template-columns:1fr auto;gap:8px}.entry h3{margin:0;font-size:14px}.entry .date{font-size:11px;color:#758095;margin-top:3px}.amounts{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-top:8px}.in{color:var(--green);font-weight:750}.out{color:var(--red);font-weight:750}.balance{font-size:13px;font-weight:800;color:var(--navy);align-self:center}.entry .actions{grid-column:1/-1;margin-top:0}
+.empty{text-align:center;color:#7a8496;padding:20px;font-size:13px}
+footer{text-align:center;color:#81899a;font-size:11px;padding:8px 10px 25px}
+@media(max-width:500px){.summary{gap:6px}.stat{padding:11px 8px}.formgrid{grid-template-columns:1fr 1fr}.panel{padding:14px}.brand h1{font-size:20px}.brand img{width:58px;height:58px}}
+</style></head>
+<body>
+<header><div class="brand"><img src="icon-192.png" alt="Logo SEGA FC"><div><h1>SEGA FC</h1><p>CASH FLOW • TEAM TREASURY</p></div></div></header>
+<main>
+<section class="summary">
+<div class="stat"><span>Total Masuk</span><strong id="sumIn">Rp0</strong></div>
+<div class="stat"><span>Total Keluar</span><strong id="sumOut">Rp0</strong></div>
+<div class="stat total"><span>Sisa Kas</span><strong id="sumBal">Rp0</strong></div>
+</section>
+<section class="panel">
+<h2>＋ Catat Transaksi Kas</h2>
+<form id="entryForm">
+<div class="formgrid">
+<div class="field"><label for="date">Tanggal</label><input id="date" type="date" required></div>
+<div class="field"><label for="type">Kategori transaksi</label><select id="type">
+<option value="dues">Iuran pertandingan</option><option value="match">Minisoccer / sewa lapangan</option>
+<option value="laundry">Laundry jersey</option><option value="social">Sosial / bantuan</option>
+<option value="food">Konsumsi / minum</option><option value="equipment">Perlengkapan tim</option>
+<option value="transport">Transportasi</option><option value="other">Pengeluaran / pemasukan lain</option>
+</select></div>
+<div class="field"><label for="direction">Arus kas</label><select id="direction"><option value="income">Kas masuk</option><option value="expense">Kas keluar</option></select></div>
+<div class="field full"><label for="desc">Keterangan transaksi</label><input id="desc" placeholder="Contoh: Iuran MINSOC 2 JAM / Laundry jersey" required></div>
+<div class="field"><label for="income">Uang masuk (Rp)</label><input id="income" type="number" min="0" step="1000" value="0" inputmode="numeric"></div>
+<div class="field"><label for="expense">Uang keluar (Rp)</label><input id="expense" type="number" min="0" step="1000" value="0" inputmode="numeric"><button class="btn soft" type="button" id="laundryPreset" style="margin-top:5px;padding:7px 9px;text-align:left">Contoh laundry: Rp25.000</button></div>
+<div class="field full"><label for="note">Catatan (opsional)</label><textarea id="note" placeholder="Contoh: Kebakaran, iuran pemain, sewa lapangan"></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" type="submit" id="saveBtn">Simpan Transaksi</button><button class="btn soft" type="button" id="resetBtn">Kosongkan Form</button></div>
+<p class="muted">Pilih kategori dan arus kas. Contoh kas masuk: iuran pertandingan yang baru dibayar pemain. Contoh kas keluar: laundry jersey Rp25.000, sewa lapangan, konsumsi, sosial, atau pengeluaran lain. Nominal contoh bisa diubah saat input. Kategori dan nominal akan ikut tercetak pada laporan.</p>
+</form></section>
+<section class="panel"><h2>📒 Riwayat Transaksi</h2><div id="entries" class="entries"></div>
+<div class="actions"><button class="btn gold" id="pngBtn">Simpan Laporan PNG</button><button class="btn soft" id="jpgBtn">Simpan Laporan JPG</button><button class="btn primary" id="printBtn">Cetak / PDF</button></div>
+<p class="muted">File gambar akan diunduh ke folder Unduhan/Downloads. Dari sana bisa dipindahkan ke Dokumen di file manager HP.</p></section>
+<section class="panel"><h2>⚙️ Data & Cadangan</h2><div class="actions"><button class="btn soft" id="exportBtn">Ekspor Data JSON</button><label class="btn soft" for="importFile">Impor Data JSON</label><input id="importFile" type="file" accept="application/json,.json" hidden><button class="btn danger" id="clearBtn">Hapus Semua Data</button></div><p class="muted">Simpan file JSON sebagai cadangan. Jangan hapus data sebelum memastikan cadangan sudah tersimpan.</p></section>
+</main><footer>SEGA FC • Sistem Kas Tim • Data disimpan lokal di perangkat</footer>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n||0);
+const today=new Date(); $('date').value=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+let records=JSON.parse(localStorage.getItem('sega_fc_cashflow_v1')||'[]'), editId=null;
+function save(){localStorage.setItem('sega_fc_cashflow_v1',JSON.stringify(records));render()}
+function totals(){return records.reduce((a,r)=>({income:a.income+r.income,expense:a.expense+r.expense}),{income:0,expense:0})}
+function balanceAt(index){return records.slice(0,index+1).reduce((s,r)=>s+r.income-r.expense,0)}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){const t=totals();$('sumIn').textContent=fmt(t.income);$('sumOut').textContent=fmt(t.expense);$('sumBal').textContent=fmt(t.income-t.expense);
+const sorted=[...records].sort((a,b)=>b.date.localeCompare(a.date)||b.created-a.created);
+$('entries').innerHTML=sorted.length?sorted.map(r=>{const idx=records.slice().sort((a,b)=>a.date.localeCompare(b.date)||a.created-b.created).findIndex(x=>x.id===r.id);return `<article class="entry"><div><h3>${safe(r.desc)}</h3><div class="date">${r.date.split('-').reverse().join('/')} · ${safe(r.typeLabel||'Transaksi')}${r.note?' · '+safe(r.note):''}</div><div class="amounts"><span class="in">Masuk ${fmt(r.income)}</span><span class="out">Keluar ${fmt(r.expense)}</span></div></div><div class="balance">Saldo ${fmt(balanceAt(idx))}</div><div class="actions"><button class="btn soft" onclick="editRecord('${r.id}')">Edit</button><button class="btn danger" onclick="deleteRecord('${r.id}')">Hapus</button></div></article>`}).join(''):'<div class="empty">Belum ada transaksi. Tambahkan transaksi pertama di atas.</div>'}
+function resetForm(){editId=null;$('entryForm').reset();$('date').value=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;$('income').value=0;$('expense').value=0;$('saveBtn').textContent='Simpan Transaksi'}
+$('entryForm').addEventListener('submit',e=>{e.preventDefault();const income=Number($('income').value)||0,expense=Number($('expense').value)||0;if(income===0&&expense===0){alert('Isi nominal uang masuk atau uang keluar.');return}const type=$('type').value;const direction=$('direction').value;
+const actualIncome=direction==='income'?income:0, actualExpense=direction==='expense'?expense:0;
+if(direction==='income'&&income===0){alert('Masukkan nominal kas masuk.');return}
+if(direction==='expense'&&expense===0){alert('Masukkan nominal kas keluar.');return}
+const item={id:editId||String(Date.now()),created:Date.now(),date:$('date').value,type,typeLabel:$('type').selectedOptions[0].text,desc:$('desc').value.trim(),income:actualIncome,expense:actualExpense,note:$('note').value.trim()};if(editId)records=records.map(r=>r.id===editId?{...r,...item}:r);else records.push(item);save();resetForm()});
+window.editRecord=id=>{const r=records.find(x=>x.id===id);if(!r)return;editId=id;$('date').value=r.date;$('type').value=r.type;$('direction').value=r.income>0?'income':'expense';$('desc').value=r.desc;$('income').value=r.income;$('expense').value=r.expense;$('note').value=r.note||'';$('saveBtn').textContent='Simpan Perubahan';$('entryForm').scrollIntoView({behavior:'smooth'})};
+window.deleteRecord=id=>{if(confirm('Hapus transaksi ini?')){records=records.filter(r=>r.id!==id);save()}};
+$('resetBtn').onclick=resetForm;
+$('laundryPreset').onclick=()=>{$('type').value='laundry';$('direction').value='expense';$('income').value=0;$('expense').value=25000;$('desc').value='Laundry jersey';$('note').value='Contoh pengeluaran laundry';};
+$('direction').addEventListener('change',()=>{if($('direction').value==='income')$('expense').value=0;else $('income').value=0;});
+$('type').addEventListener('change',()=>{const t=$('type').value;if(t==='dues')$('desc').placeholder='Contoh: Iuran MINSOC 2 JAM';else if(t==='laundry')$('desc').placeholder='Contoh: Laundry jersey pertandingan';else if(t==='social')$('desc').placeholder='Contoh: Bantuan sosial';else if(t==='match')$('desc').placeholder='Contoh: Sewa lapangan MINSOC';else $('desc').placeholder='Tulis keterangan transaksi';});
+function reportCanvas(){const W=1000,pad=58;const sorted=[...records].sort((a,b)=>a.date.localeCompare(b.date)||a.created-b.created);const rowH=90;const H=330+Math.max(1,sorted.length)*rowH+100;const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+x.fillStyle='#f7f4eb';x.fillRect(0,0,W,H);x.fillStyle='#071b3d';x.fillRect(0,0,W,205);
+x.fillStyle='#e6bd59';x.font='bold 42px Arial';x.fillText('SEGA FC',pad,70);x.fillStyle='#ffffff';x.font='bold 27px Arial';x.fillText('LAPORAN CASH FLOW TIM',pad,118);x.fillStyle='#d9c58c';x.font='18px Arial';x.fillText('Laporan kas tim sepak bola',pad,157);
+const t=totals();x.fillStyle='#ffffff';x.font='bold 20px Arial';x.fillText('TOTAL MASUK  '+fmt(t.income),pad,250);x.fillText('TOTAL KELUAR  '+fmt(t.expense),pad+330,250);x.fillStyle='#071b3d';x.font='bold 26px Arial';x.fillText('SISA KAS: '+fmt(t.income-t.expense),pad,300);
+let y=360;x.fillStyle='#102c58';x.fillRect(pad,y,W-pad*2,48);x.fillStyle='#fff';x.font='bold 17px Arial';x.fillText('TANGGAL / KETERANGAN',pad+15,y+30);x.fillText('MASUK',570,y+30);x.fillText('KELUAR',730,y+30);x.fillText('SALDO',860,y+30);
+y+=48;let bal=0;for(const r of sorted){bal+=r.income-r.expense;x.fillStyle=(sorted.indexOf(r)%2===0)?'#ffffff':'#ece7d8';x.fillRect(pad,y,W-pad*2,rowH);x.fillStyle='#13213a';x.font='bold 18px Arial';x.fillText(r.date.split('-').reverse().join('/') ,pad+15,y+30);x.font='17px Arial';x.fillText((r.typeLabel||'Transaksi')+' • '+r.desc.slice(0,29),pad+15,y+57);if(r.note){x.fillStyle='#687387';x.font='13px Arial';x.fillText(r.note.slice(0,45),pad+15,y+77)}x.fillStyle='#147d53';x.font='bold 16px Arial';x.fillText(fmt(r.income),570,y+38);x.fillStyle='#b33b43';x.fillText(fmt(r.expense),730,y+38);x.fillStyle='#13213a';x.fillText(fmt(bal),860,y+38);y+=rowH}
+x.fillStyle='#071b3d';x.fillRect(pad,H-75,W-pad*2,2);x.fillStyle='#6b7484';x.font='14px Arial';x.fillText('Dicetak dari aplikasi kas SEGA FC • '+new Date().toLocaleDateString('id-ID'),pad,H-43);return c}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+$('pngBtn').onclick=()=>reportCanvas().toBlob(b=>download(b,'Laporan-Kas-SEGA-FC.png'),'image/png');
+$('jpgBtn').onclick=()=>reportCanvas().toBlob(b=>download(b,'Laporan-Kas-SEGA-FC.jpg'),'image/jpeg',.94);
+$('printBtn').onclick=()=>{const c=reportCanvas(),w=window.open('','_blank');if(!w){alert('Izinkan pop-up untuk mencetak laporan.');return}w.document.write(`<html><head><title>Laporan Kas SEGA FC</title><style>body{margin:0}img{width:100%;height:auto}@media print{@page{size:A4 portrait;margin:8mm}}</style></head><body><img src="${c.toDataURL('image/png')}"><script>window.onload=()=>{window.print()}<\/script></body></html>`);w.document.close()};
+$('exportBtn').onclick=()=>download(new Blob([JSON.stringify(records,null,2)],{type:'application/json'}),'Backup-Kas-SEGA-FC.json');
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d))throw Error();if(confirm('Impor data akan mengganti seluruh data kas saat ini. Lanjutkan?')){records=d;save()}}catch{alert('File JSON tidak valid.')}e.target.value=''};
+$('clearBtn').onclick=()=>{if(confirm('Yakin menghapus SEMUA transaksi? Sebaiknya ekspor cadangan terlebih dahulu.')){records=[];save()}};
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script></body></html>
